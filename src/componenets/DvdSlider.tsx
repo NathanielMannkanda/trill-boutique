@@ -1,7 +1,12 @@
-import { useEffect, useRef } from "react";
+import { useEffect, useRef} from "react";
+import gsap from "gsap";
 
 const DvdSlider: React.FC = () => {
   const imageRef = useRef<HTMLImageElement>(null)
+
+  const containerRef = useRef<HTMLDivElement>(null);
+
+  const isAnimating = useRef(true);
 
   const position = useRef({
     x: 100,
@@ -17,6 +22,11 @@ const DvdSlider: React.FC = () => {
     let frameId: number;
 
     const animate = () => {
+
+      if(!isAnimating.current) {
+        return;
+      }
+
       const image = imageRef.current;
 
       if(!image) {
@@ -65,8 +75,33 @@ const DvdSlider: React.FC = () => {
     return () => cancelAnimationFrame(frameId);
   }, []);
 
+  const handleClick = () => {
+    isAnimating.current =false;
+
+    const tl = gsap.timeline();
+
+    tl.to(imageRef.current, {
+      scale: 6,
+      duration: 1.2,
+      ease: "power3.inOut",
+    });
+
+    tl.to(
+      containerRef.current,
+      {
+        opacity: 0,
+        duration: 0.8,
+        ease: "power2.out"
+      },
+      "-=0.4"
+    );
+  };
+
   return(
-    <div className="fixed inset-0 z-50 overflow-hidden bg-black">
+    <div 
+      ref={containerRef}
+      onClick={handleClick}
+      className="fixed inset-0 z-50 overflow-hidden bg-black">
       <img 
         ref={imageRef}
         src="/roy-mustang-alchemy.png"
