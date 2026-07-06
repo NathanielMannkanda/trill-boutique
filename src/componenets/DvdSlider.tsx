@@ -1,7 +1,11 @@
 import { useEffect, useRef} from "react";
 import gsap from "gsap";
 
-const DvdSlider: React.FC = () => {
+type DvdSliderProps = {
+  onFinish: () => void
+}
+
+const DvdSlider: React.FC<DvdSliderProps> = ({ onFinish }) => {
   const imageRef = useRef<HTMLImageElement>(null)
 
   const containerRef = useRef<HTMLDivElement>(null);
@@ -78,7 +82,9 @@ const DvdSlider: React.FC = () => {
   const handleClick = () => {
     isAnimating.current =false;
 
-    const tl = gsap.timeline();
+    const tl = gsap.timeline({
+      onComplete: onFinish,
+    });
 
     tl.to(imageRef.current, {
       scale: 6,

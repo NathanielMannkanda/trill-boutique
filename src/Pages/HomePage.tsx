@@ -1,9 +1,17 @@
-import DvdSlider from "../componenets/DvdSlider"
+import { useState } from "react";
+import DvdSlider from "../componenets/DvdSlider";
 
 function HomePage () {
+  const [showIntro, setShowIntro] = useState(true);
   return(
     <>
-      <DvdSlider />
+
+      {showIntro && (
+        <DvdSlider 
+          onFinish={() => setShowIntro(false)}
+        />
+        
+      )}
     </>
   )
 }
