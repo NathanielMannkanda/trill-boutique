@@ -22,6 +22,8 @@ const DvdSlider: React.FC<DvdSliderProps> = ({ onFinish }) => {
     y: 4,
   });
 
+  const rotation = useRef(0);
+
   useEffect(() => {
     let frameId: number;
 
@@ -67,8 +69,12 @@ const DvdSlider: React.FC<DvdSliderProps> = ({ onFinish }) => {
         velocity.current.y *= -1
       }
 
+      rotation.current += 0.5;
+
+
       image.style.transform = `
         translate(${position.current.x}px, ${position.current.y}px)
+        rotate(${rotation.current}deg)
       `;
 
       frameId = requestAnimationFrame(animate);
