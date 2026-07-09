@@ -1,5 +1,6 @@
 import { useEffect, useRef} from "react";
 import gsap from "gsap";
+import { useMusic } from "../hooks/useMusic";
 
 type DvdSliderProps = {
   onFinish: () => void
@@ -11,6 +12,8 @@ const DvdSlider: React.FC<DvdSliderProps> = ({ onFinish }) => {
   const wrapperRef = useRef<HTMLDivElement>(null);
 
   const isAnimating = useRef(true);
+
+  const music = useMusic();
 
   const position = useRef({
     x: 100,
@@ -96,7 +99,10 @@ const DvdSlider: React.FC<DvdSliderProps> = ({ onFinish }) => {
     isAnimating.current =false;
 
     const tl = gsap.timeline({
-      onComplete: onFinish,
+      onComplete: () => {
+        music.fadeIn();
+        onFinish();
+      },
     });
 
     //get the center of the screen
