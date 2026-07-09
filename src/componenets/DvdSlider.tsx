@@ -52,6 +52,8 @@ const DvdSlider: React.FC<DvdSliderProps> = ({ onFinish }) => {
       const imageHeight = image.offsetHeight;
 
 
+
+
       //bounce off left and right ends
       if (position.current.x <= 0) {
         velocity.current.x *= -1;
@@ -97,8 +99,21 @@ const DvdSlider: React.FC<DvdSliderProps> = ({ onFinish }) => {
       onComplete: onFinish,
     });
 
+    //get the center of the screen
+      const centerX = 
+        (window.innerWidth - wrapperRef.current!.offsetWidth) / 2;
+      const centerY = 
+        (window.innerHeight - wrapperRef.current!.offsetHeight) / 2;
+
     tl.to(wrapperRef.current, {
-      scale: 6,
+      x:centerX,
+      y:centerY,
+      duration:0.8,
+      ease:"power2.inOut"
+    })
+
+    tl.to(wrapperRef.current, {
+      scale: 20,
       duration: 1.2,
       ease: "power3.inOut",
     });

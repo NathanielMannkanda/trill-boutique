@@ -2,16 +2,25 @@ import { useState } from "react";
 import DvdSlider from "../componenets/DvdSlider";
 
 function HomePage () {
-  const [showIntro, setShowIntro] = useState(true);
+  const [introFinished, setIntroFinished] = useState(false);
   return(
     <>
 
-      {showIntro && (
+      {!introFinished && (
         <DvdSlider 
-          onFinish={() => setShowIntro(false)}
+          onFinish={() => setIntroFinished(true)}
         />
-        
+      
       )}
+
+      <main
+        className={`
+          min-h-screen transition-opacity duration-1000
+          ${introFinished ? "opacity-100" : "opacity-0"}
+          `}
+      >
+        {/*website here*/}
+      </main>
     </>
   )
 }
