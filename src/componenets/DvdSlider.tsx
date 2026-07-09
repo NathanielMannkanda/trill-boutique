@@ -7,8 +7,8 @@ type DvdSliderProps = {
 
 const DvdSlider: React.FC<DvdSliderProps> = ({ onFinish }) => {
   const imageRef = useRef<HTMLImageElement>(null)
-
   const containerRef = useRef<HTMLDivElement>(null);
+  const wrapperRef = useRef<HTMLDivElement>(null);
 
   const isAnimating = useRef(true);
 
@@ -33,9 +33,10 @@ const DvdSlider: React.FC<DvdSliderProps> = ({ onFinish }) => {
         return;
       }
 
+      const wrapper = wrapperRef.current;
       const image = imageRef.current;
 
-      if(!image) {
+      if (!wrapper || !image){
         frameId = requestAnimationFrame(animate);
         return;
       }
@@ -72,10 +73,14 @@ const DvdSlider: React.FC<DvdSliderProps> = ({ onFinish }) => {
       rotation.current += 0.5;
 
 
-      image.style.transform = `
-        translate(${position.current.x}px, ${position.current.y}px)
-        rotate(${rotation.current}deg)
-      `;
+      gsap.set(wrapper, {
+        x: position.current.x,
+        y: position.current.y,
+      });
+
+      gsap.set(image, {
+        rotation: rotation.current,
+      });
 
       frameId = requestAnimationFrame(animate);
     };
@@ -92,7 +97,7 @@ const DvdSlider: React.FC<DvdSliderProps> = ({ onFinish }) => {
       onComplete: onFinish,
     });
 
-    tl.to(imageRef.current, {
+    tl.to(wrapperRef.current, {
       scale: 6,
       duration: 1.2,
       ease: "power3.inOut",
@@ -114,13 +119,18 @@ const DvdSlider: React.FC<DvdSliderProps> = ({ onFinish }) => {
       ref={containerRef}
       onClick={handleClick}
       className="fixed inset-0 z-50 overflow-hidden bg-black">
-      <img 
-        ref={imageRef}
-        src="/roy-mustang-alchemy.png"
-        alt="Alchemy Circle"
-        className="absolute w-40 select-none invert"
-        draggable={false}
-      />
+      <div
+        ref={wrapperRef}
+        className="absolute"
+      >
+        <img 
+          ref={imageRef}
+          src="/roy-mustang-alchemy.png"
+          alt="Alchemy Circle"
+          className="w-40 select-none invert"
+          draggable={false}
+        />
+      </div>
     </div>
   );
 };
