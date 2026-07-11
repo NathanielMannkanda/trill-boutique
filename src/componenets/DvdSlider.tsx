@@ -100,8 +100,9 @@ const DvdSlider: React.FC<DvdSliderProps> = ({ onFinish }) => {
 
     const tl = gsap.timeline({
       onComplete: () => {
-        music.fadeIn();
         onFinish();
+        music.fadeIn();
+        
       },
     });
 
