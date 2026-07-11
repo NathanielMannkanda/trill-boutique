@@ -2,25 +2,30 @@ import {
   createContext,
   //useContext,
   useRef,
+  useState,
   type ReactNode
  } from "react";
 
 import Nothing_Can_Be_Explained from "../assets/music/Nothing_Can_Be_Explained.mp3"
+import korg_funk_5 from "../assets/music/korg_funk_5.mp3"
+import additional_cause_for_sorrow from "../assets/music/additional_cause_for_sorrow.mp3"
 
 import gsap from "gsap";
 
   type MusicContextType = {
     play: () => void;
-
     pause: () => void;
-
     next: () => void;
-
     previous: () => void;
-
     fadeIn: () => void;
-
     fadeOut: () => void;
+
+    currentSong: number;
+    isPlaying: boolean;
+    playlist: {
+      title: string;
+      src: string;
+    }[];
   };
 
   //eslint-disable-next-line
@@ -41,21 +46,50 @@ import gsap from "gsap";
   const playlist = [
     {
       title: "Nothing can be Explained",
+      artist: "Shiro Sagisu",
       src: Nothing_Can_Be_Explained,
+    },
+    {
+      title: "Korg Funk 5",
+      artist: "Aphex Twins",
+      src: korg_funk_5,
+    },
+    {
+      title: "Additional Cause for Sorrow",
+      artist: "Shiro Sagisu",
+      src: additional_cause_for_sorrow,
     },
   ];
 
-  const currentSong = useRef(0)
+  const playSong = async (index: number) => {
+    const audio = audioRef.current;
+
+    //Update Reacts state
+    setCurrentSong(index);
+
+    //load the correct file
+    audio.src = playlist[index].src;
+
+    try{
+      await audio.play();
+      setIsPlaying(true);
+    }catch(error){
+      console.error("Playback failed:", error)
+    }
+  }
+
+  const [currentSong, setCurrentSong] = useState(0);
+  const [isPlaying, setIsPlaying] = useState(false);
 
   //to play
   const play = async () => {
     const audio = audioRef.current;
 
-    audio.src = playlist[currentSong.current].src;
-    //audio.volume = 1;
+    audio.src = playlist[currentSong].src;
 
     try{
       await audio.play();
+      setIsPlaying(true);
     }catch(error){
       console.error("Playback failed:", error);
     }
@@ -63,29 +97,25 @@ import gsap from "gsap";
 
   //to go to next song
   const next = () => {
-    currentSong.current++;
+    const nextSong = (currentSong + 1) % playlist.length;
 
-    if (currentSong.current >= playlist.length){
-      currentSong.current = 0;
-    }
-
-    play();
+    playSong(nextSong)
   };
 
-  //to go to next song
+  //to go to previous song
   const previous = () => {
-    currentSong.current--;
+    const previousSong = 
+      currentSong === 0
+      ? playlist.length - 1
+      : currentSong - 1;
 
-    if (currentSong.current < 0){
-      currentSong.current = playlist.length - 1;
-    }
-
-    play();
+    playSong(previousSong);
   };
 
   //to pause
  const pause = () => {
     audioRef.current.pause();
+    setIsPlaying(false);
   };
 
   const fadeIn = async () => {
@@ -94,6 +124,7 @@ import gsap from "gsap";
     audio.volume = 0;
 
       await play();
+      setIsPlaying(true);
 
       gsap.to(audio, {
         volume: 1,
@@ -111,9 +142,12 @@ import gsap from "gsap";
       ease: "power2.out",
       onComplete: () => {
         audio.pause();
+        setIsPlaying(false);
       },
     });
    };
+  
+
 
   
   
@@ -126,6 +160,10 @@ import gsap from "gsap";
         previous,
         fadeIn,
         fadeOut,
+
+        currentSong,
+        isPlaying,
+        playlist,
       }
     }>
       {children}
