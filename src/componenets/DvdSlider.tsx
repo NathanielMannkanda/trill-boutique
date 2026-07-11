@@ -11,7 +11,8 @@ const DvdSlider: React.FC<DvdSliderProps> = ({ onFinish }) => {
   const containerRef = useRef<HTMLDivElement>(null);
   const wrapperRef = useRef<HTMLDivElement>(null);
 
-  const isAnimating = useRef(true);
+  const isMoving = useRef(true);
+  const isRotating = useRef(true);
 
   const music = useMusic();
 
@@ -32,10 +33,6 @@ const DvdSlider: React.FC<DvdSliderProps> = ({ onFinish }) => {
 
     const animate = () => {
 
-      if(!isAnimating.current) {
-        return;
-      }
-
       const wrapper = wrapperRef.current;
       const image = imageRef.current;
 
@@ -44,48 +41,52 @@ const DvdSlider: React.FC<DvdSliderProps> = ({ onFinish }) => {
         return;
       }
 
-      position.current.x += velocity.current.x;
-      position.current.y += velocity.current.y;
+      if (isMoving.current) {
+        position.current.x += velocity.current.x;
+        position.current.y += velocity.current.y;
 
-      //to get items width
-      const screenWidth = window.innerWidth;
-      const imageWidth = image.offsetWidth;
+        //to get items width
+        const screenWidth = window.innerWidth;
+        const imageWidth = image.offsetWidth;
 
-      const screenHeight = window.innerHeight;
-      const imageHeight = image.offsetHeight;
+        const screenHeight = window.innerHeight;
+        const imageHeight = image.offsetHeight;
 
+        //bounce off left and right ends
+        if (position.current.x <= 0) {
+          velocity.current.x *= -1;
+        }
 
+        if (position.current.x >= screenWidth - imageWidth){
+          velocity.current.x *= -1
+        }
 
+        //Bounce off bottom and top
+        if (position.current.y <= 0){
+          velocity.current.y *= -1;
+        }
 
-      //bounce off left and right ends
-      if (position.current.x <= 0) {
-        velocity.current.x *= -1;
+        if (position.current.y >= screenHeight - imageHeight){
+          velocity.current.y *= -1
+        }
       }
 
-      if (position.current.x >= screenWidth - imageWidth){
-        velocity.current.x *= -1
+      if (isRotating.current){
+        rotation.current += 0.5;
       }
 
-      //Bounce off bottom and top
-      if (position.current.y <= 0){
-        velocity.current.y *= -1;
+      if(isMoving.current) {
+        gsap.set(wrapper, {
+          x: position.current.x,
+          y: position.current.y,
+        });
       }
 
-      if (position.current.y >= screenHeight - imageHeight){
-        velocity.current.y *= -1
+      if(isRotating.current){
+        gsap.set(image, {
+          rotation: rotation.current,
+        });
       }
-
-      rotation.current += 0.5;
-
-
-      gsap.set(wrapper, {
-        x: position.current.x,
-        y: position.current.y,
-      });
-
-      gsap.set(image, {
-        rotation: rotation.current,
-      });
 
       frameId = requestAnimationFrame(animate);
     };
@@ -96,7 +97,15 @@ const DvdSlider: React.FC<DvdSliderProps> = ({ onFinish }) => {
   }, []);
 
   const handleClick = () => {
-    isAnimating.current =false;
+    isMoving.current = false;
+    isRotating.current = false;
+
+    const spinTween = gsap.to(imageRef.current, {
+      rotate: "+=360",
+      duration: 1.5,
+      ease: "none",
+      repeat: -1,
+    });
 
     const tl = gsap.timeline({
       onComplete: () => {
@@ -106,24 +115,54 @@ const DvdSlider: React.FC<DvdSliderProps> = ({ onFinish }) => {
       },
     });
 
+    tl.add("reveal");
+
+    tl.to(
+      spinTween,
+      {
+        timeScale: 3,
+        duration: 1.2,
+        ease: "power2.in",
+      },
+      0
+    );
+
     //get the center of the screen
       const centerX = 
         (window.innerWidth - wrapperRef.current!.offsetWidth) / 2;
       const centerY = 
         (window.innerHeight - wrapperRef.current!.offsetHeight) / 2;
 
-    tl.to(wrapperRef.current, {
-      x:centerX,
-      y:centerY,
-      duration:0.8,
-      ease:"power2.inOut"
-    })
+    tl.to(
+      imageRef.current,
+      {
+        rotation: "+=720",
+        duration: 2,
+        ease: "none",
+      },
+      "reveal"
+    )
 
-    tl.to(wrapperRef.current, {
+    tl.to(
+      wrapperRef.current, 
+      {
+        x:centerX,
+        y:centerY,
+        duration:0.8,
+        ease:"power2.inOut"
+      },
+      "reveal"
+    )
+
+    tl.to(
+      wrapperRef.current, 
+      {
       scale: 20,
-      duration: 1.2,
-      ease: "power3.inOut",
-    });
+      duration: 1.4,
+      ease: "power4.inOut",
+      },
+      0.4
+    );
 
     tl.to(
       containerRef.current,
@@ -134,6 +173,8 @@ const DvdSlider: React.FC<DvdSliderProps> = ({ onFinish }) => {
       },
       "-=0.4"
     );
+
+
   };
 
   return(
@@ -145,7 +186,7 @@ const DvdSlider: React.FC<DvdSliderProps> = ({ onFinish }) => {
         ref={wrapperRef}
         className="absolute"
       >
-        <img 
+        <img
           ref={imageRef}
           src="/roy-mustang-alchemy.png"
           alt="Alchemy Circle"
