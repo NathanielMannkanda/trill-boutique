@@ -120,8 +120,8 @@ const DvdSlider: React.FC<DvdSliderProps> = ({ onFinish }) => {
     tl.to(
       spinTween,
       {
-        timeScale: 3,
-        duration: 1.2,
+        timeScale: 4,
+        duration: 1.4,
         ease: "power2.in",
       },
       0
@@ -158,10 +158,10 @@ const DvdSlider: React.FC<DvdSliderProps> = ({ onFinish }) => {
       wrapperRef.current, 
       {
       scale: 20,
-      duration: 1.4,
+      duration: 1.6,
       ease: "power4.inOut",
       },
-      0.4
+      0.25
     );
 
     tl.to(
