@@ -9,7 +9,7 @@ const MusicPlayer: React.FC = () => {
   const music = useMusic();
 
   return(
-    <div className="fixed bottom-6 right-6 bg-black/60 backdrop-blur-md border border-white/10 rounded-2xl p-5 w-80 text-white shadow-2xl">
+    <div className="fixed bottom-18 right-18 bg-black/60 backdrop-blur-md border border-white/10 rounded-2xl p-5 w-80 text-white shadow-2xl">
       <h2 className="text-lg font-semibold">
         {music.playlist[music.currentSong].title}
       </h2>
@@ -22,6 +22,7 @@ const MusicPlayer: React.FC = () => {
           <img 
             src={RewindButton} 
             alt="rewind button" 
+            className="invert h-8 cursor-pointer"
           />
         </button>
 
@@ -33,9 +34,9 @@ const MusicPlayer: React.FC = () => {
           }
           className="text-4xl hover:scale-110 transition">
           {music.isPlaying ? 
-            <img src={PauseSongButton} />
+            <img src={PauseSongButton} className="invert h-8 cursor-pointer" />
             : 
-            <img src={PlaySongButton} />
+            <img src={PlaySongButton} className="invert h-8 cursor-pointer" />
           }
         </button>
 
@@ -45,7 +46,9 @@ const MusicPlayer: React.FC = () => {
         >
           <img 
             src={nextSongButton}    
-            alt="next=song-button" />
+            alt="next=song-button"
+            className="invert h-8 cursor-pointer"
+            />
         </button>
 
       </div>
