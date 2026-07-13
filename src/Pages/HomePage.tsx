@@ -3,7 +3,7 @@ import DvdSlider from "../componenets/DvdSlider";
 import MusicPlayer from "../componenets/MusicPlayer";
 import AlchemyAngle from "../assets/images/AlchemyAngle.png";
 import HeaderFrame from "../assets/images/TitleCard.png"
-import Coffin from "../assets/images/Coffin.png"
+import HeroArtWork from "../componenets/HeroArtwork";
 
 function HomePage () {
   const [introFinished, setIntroFinished] = useState(() => {
@@ -52,7 +52,7 @@ function HomePage () {
           alt=""
           className="absolute bottom-0 right-0 w-56 opacity-20 pointer-events-none select-none rotate-180"
         />
-        <MusicPlayer />
+        
         {/*website here*/}
         <header className="relative flex justify-center pt-10">
           <div className="relative">
@@ -68,13 +68,11 @@ function HomePage () {
           </div>
         </header>
 
-        <section className="flex justify-center items-center mt-20">
-          <img 
-            src={Coffin} 
-            alt="Coffin" 
-            className="w-56 opacity-90 select-none pointer-events-none"
-          />
+        <section className="flex justify-center items-center ">
+          <HeroArtWork startAnimation={introFinished}/>
         </section>
+
+        <MusicPlayer />
       </main>
     </>
   )
