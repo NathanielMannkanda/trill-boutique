@@ -14,6 +14,10 @@ const MusicPlayer: React.FC = () => {
         {music.playlist[music.currentSong].title}
       </h2>
 
+      <p className="text-sm text-gray-400">
+        {music.playlist[music.currentSong].artist}
+      </p>
+
       <div className="flex justify-center gap-6 mt-5">
         <button
           onClick={music.previous} 
