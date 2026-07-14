@@ -1,8 +1,8 @@
 import { 
   createContext,
-  //useContext,
   useRef,
   useState,
+  useEffect,
   type ReactNode
  } from "react";
 
@@ -24,6 +24,7 @@ import gsap from "gsap";
     isPlaying: boolean;
     playlist: {
       title: string;
+      artist: string;
       src: string;
     }[];
   };
@@ -146,9 +147,22 @@ import gsap from "gsap";
       },
     });
    };
-  
 
+   useEffect(() => {
+    const audio = audioRef.current;
 
+    const handleEnded = () => {
+      next();
+    };
+
+    audio.addEventListener("ended", handleEnded);
+
+    return () => {
+      audio.removeEventListener("ended", handleEnded);
+    };
+
+    // eslint-disable-next-line
+   }, [currentSong]);
   
   
   return (
