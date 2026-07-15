@@ -1,9 +1,11 @@
 import { useState } from "react";
+import { Link } from "react-router-dom";
 import DvdSlider from "../componenets/DvdSlider";
 import MusicPlayer from "../componenets/MusicPlayer";
 import AlchemyAngle from "../assets/images/AlchemyAngle.png";
 import HeaderFrame from "../assets/images/TitleCard.png"
 import HeroArtWork from "../componenets/HeroArtwork";
+
 
 function HomePage () {
   const [introFinished, setIntroFinished] = useState(() => {
@@ -72,7 +74,24 @@ function HomePage () {
           <HeroArtWork startAnimation={introFinished}/>
         </section>
 
+        <div className="flex justify-center text-white gap-16 mt-10 text-2xl font-serif tracking-widest">
+          <Link
+            to="/models"
+            className="transition hover:scale-110"
+          >
+            Models
+          </Link>
+
+          <Link 
+            to="/clothing"
+            className="transition hover:scale-110"
+          >
+            Clothes
+          </Link>
+        </div>
+
         <MusicPlayer />
+      
       </main>
     </>
   )
