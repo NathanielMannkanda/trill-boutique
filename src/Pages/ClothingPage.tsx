@@ -1,3 +1,5 @@
+import MusicPlayer from "../componenets/MusicPlayer";
+
 const ClothingPage: React.FC = () => {
   return(
     <>
@@ -6,6 +8,8 @@ const ClothingPage: React.FC = () => {
           Clothing
         </h1>
       </main>
+
+      <MusicPlayer />
     </>
   )
 }

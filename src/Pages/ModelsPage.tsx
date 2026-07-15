@@ -1,3 +1,5 @@
+import MusicPlayer from "../componenets/MusicPlayer";
+
 const ModelsPage: React.FC = () => {
   return(
     <>
@@ -6,6 +8,8 @@ const ModelsPage: React.FC = () => {
           Models
         </h1>
       </main>
+
+      <MusicPlayer />
     </>
   )
 }

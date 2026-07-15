@@ -1,5 +1,6 @@
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 import { Link } from "react-router-dom";
+import gsap from "gsap";
 import DvdSlider from "../componenets/DvdSlider";
 import MusicPlayer from "../componenets/MusicPlayer";
 import AlchemyAngle from "../assets/images/AlchemyAngle.png";
@@ -11,6 +12,26 @@ function HomePage () {
   const [introFinished, setIntroFinished] = useState(() => {
     return sessionStorage.getItem("introPlayed") === "true";
   });
+  const modelsRef = useRef<HTMLAnchorElement>(null);
+  const clothesRef = useRef<HTMLAnchorElement>(null);
+
+  useEffect(() => {
+    if (!introFinished) return;
+
+    gsap.set([modelsRef.current, clothesRef.current], {
+      opacity: 0,
+      y: 10,
+    });
+
+    gsap.to([modelsRef.current, clothesRef.current], {
+      opacity: 1,
+      y: 0,
+      duration: 1.5,
+      stagger: 0.3,
+      ease: "power2.out",
+      delay: 5.8,
+    });
+  }, [introFinished]);
   return(
     <>
 
@@ -23,6 +44,7 @@ function HomePage () {
         />
       
       )}
+      
 
       <main
         className={`
@@ -76,6 +98,7 @@ function HomePage () {
 
         <div className="flex justify-center text-white gap-16 mt-10 text-2xl font-serif tracking-widest">
           <Link
+            ref={modelsRef}
             to="/models"
             className="transition hover:scale-110"
           >
@@ -83,6 +106,7 @@ function HomePage () {
           </Link>
 
           <Link 
+            ref={clothesRef}
             to="/clothing"
             className="transition hover:scale-110"
           >
